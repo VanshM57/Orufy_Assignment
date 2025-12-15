@@ -9,29 +9,21 @@ const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 
-// 🔑 IMPORTANT: credentials: true
-// Use `CLIENT_URL` env var for allowed origin. In production set it to
-// your frontend origin (for example: https://orufy-assignment-zz19.vercel.app)
 const CLIENT_URL = process.env.CLIENT_URL;
-const allowedOrigins = [CLIENT_URL, "http://localhost:5173"].filter(Boolean);
 
-// The `cors()` middleware applied globally will handle preflight OPTIONS
-// requests as well. Avoid using a literal '*' route here because some
-// path parsers (path-to-regexp) don't accept '*' and will throw.
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like Postman or server-side requests)
+    // Allow server-to-server & Postman
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    if (origin === CLIENT_URL) {
+      return callback(null, origin);
     }
+
+    return callback(new Error("Not allowed by CORS"));
   },
   credentials: true
 }));
-
 
 app.use(express.json());
 app.use(cookieParser()); // ✅ ADD THIS

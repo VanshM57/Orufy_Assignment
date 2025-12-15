@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import { useProducts } from "../context/ProductContext";
 
-const PRODUCT_TYPES = ["Foods", "Electronics", "Clothes", "Beauty Products", "Others"];
+const PRODUCT_TYPES = ["Electronics", "Clothes", "Beauty Products", "Others"];
 
 export default function AddEditProductModal({ open, onClose, editing }) {
   const { addProduct, updateProduct } = useProducts();

@@ -71,6 +71,7 @@ Server (create `.env` with these variables):
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` - SMTP settings for sending OTP
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` - Cloudinary settings for image uploads
 - `CLIENT_URL` - frontend origin (used for CORS or links)
+  - Important: set this to your deployed frontend origin (e.g. `https://orufy-assignment-zz19.vercel.app`) so the server returns a non-wildcard `Access-Control-Allow-Origin` header when cookies are used (`withCredentials`).
 
 Client (in `client/.env`):
 

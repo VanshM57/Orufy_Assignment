@@ -11,7 +11,7 @@ const app = express();
 
 // 🔑 IMPORTANT: credentials: true
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: "https://vercel.com/vansh-mishras-projects/orufy-assignment-zz19",
   credentials: true
 }));
 

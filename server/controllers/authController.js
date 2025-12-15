@@ -48,7 +48,10 @@ exports.verifyOtp = async (req, res, next) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // For cross-site requests (deployed client on a different origin),
+      // `sameSite` must be 'none' and `secure` true so browsers send the cookie
+      // when the client uses `withCredentials`/`credentials: 'include'`.
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000 // 24 HOURS
     });
     res.json({ token, message: 'Verified' });
@@ -58,7 +61,7 @@ exports.verifyOtp = async (req, res, next) => {
 exports.logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production"
   });
 

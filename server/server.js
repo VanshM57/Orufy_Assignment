@@ -1,7 +1,56 @@
-const app = require('./app');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
-// Only start the server if this file is run directly (local development)
-if (require.main === module) {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log('Server running on', PORT));
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+
+const app = express();
+
+// 🔑 IMPORTANT: credentials: true
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+
+app.use(express.json());
+app.use(cookieParser()); // ✅ ADD THIS
+
+let isConnected = false;
+async function connectToDB() {
+  if (isConnected) {
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    isConnected = true;
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+  }
 }
+
+
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    await connectToDB();
+  }
+  next();
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => console.log("MongoDB connected"))
+//   .catch(console.error);
+
+// app.listen(process.env.PORT, () =>
+//   console.log("Server running on", process.env.PORT)
+// );
+
+module.exports = app;
